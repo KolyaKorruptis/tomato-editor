@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tomato</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="logo/tomato.svg">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="logo/tomato-180.png">
+  <style>
+    * { margin:0;box-sizing:border-box; }
+    html,body,code { height:100% }
+    code,#w,#x,#iframe,#info { width:100%; }
+    body { background:#333;position: relative; } @media (prefers-color-scheme: light) {body { background:#bbb}}
+    pre { flex:auto;max-width: 33.33%;border:1px solid #777;display:flex;position:relative; }
+    code { color:#bbb;position:relative;font-size:1.1rem;overflow:auto;background:#282c34;padding:0.5rem;caret-color: white; } @media (prefers-color-scheme: light) {code {caret-color: black }}
+    code:focus { outline:none; }
+    code.hljs { display: inline-block;overflow:auto; }
+    code:before{ content:attr(data-placeholder);pointer-events:none;display:block;color:rgba(117, 117, 117,.1);font:6rem Georgia;white-space:nowrap;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%); }
+    /* code:focus:before { opacity:0;transition:opacity .2s; } */
+    #w,#x { display:flex;position:relative;resize:both;overflow:auto;height:50%;min-width:200px;min-height:200px;z-index:1;overflow:hidden; }
+    #w { float:left; }
+    #w:after,#x:after { bottom:-12px;right:-2px;z-index:1;width:0;height:0;border-top:16px solid transparent;border-bottom:16px solid transparent;border-left:16px solid orange;transform: rotate(45deg);content:"";display:block;position:absolute; }
+    #iframe { background:#fff; }
+    #info { position: absolute;font:1.1rem sans-serif;bottom:0;background:#ffff;width:auto;left:50%;transform:translateX(-50%);padding:0 .2em;opacity:.6;cursor:pointer; }
+    .collapsed { flex: none;width:0;overflow:hidden }
+    .expanded { max-width:100%;overflow:auto; }
+		.symbol { position:absolute;z-index:2;bottom:0;left:50%;transform:translateX(-50%);font-size:48px;line-height:22px;text-shadow: 0 0 1px black;user-select: none;border: 0;outline:0;color:white;cursor:pointer;padding: 0 1rem;font-family:"Lucida Sans Unicode"; }
+    #buttons { position:fixed;z-index:0;bottom:0;right:0;display:flex; }
+    #buttons button, #buttons select { font-size:1rem; }
+    #jserror { opacity:0;transition:opacity .5s;cursor:pointer;pointer-events:none; }
+    #jserror.active { opacity:1;pointer-events:auto; }
+    #jserror:after { color:white;content:attr(data-error);position:absolute;bottom:20px;left:10px;background:url(logo/splatter.svg)no-repeat left top/contain;padding-left:30px;line-height:25px;} @media (prefers-color-scheme: light){#jserror:after {color:black}}
+    code blockquote[style^="margin: 0 0 0 40px;"] { margin-left: 20px !important; }
+  </style>
+
+</head>
+<body id=b>
+
+  <div id=w>
+    <pre><div class="symbol expand">&#8596;</div><code class=html data-placeholder=HTML contentEditable=true  id=h spellcheck=false></code></pre>
+    <pre><div class="symbol expand">&#8596;</div><code class=css data-placeholder=CSS contentEditable=true id=c spellcheck=false></code></pre>
+    <pre><div class="symbol expand">&#8596;</div><code class=javascript data-placeholder=JS contentEditable=true id=j spellcheck=false></code><div id=jserror></div></pre>
+
+  </div>
+
+  <div id=x>
+    <div id=info>
+      <output id="info_iw">0</output> &times; <output id="info_ih">0</output>
+    </div>
+    <iframe id=iframe></iframe>
+  </div>
+
+  <div id=buttons>
+    <button id=buttonDownloadJson title="ctrl+d">Download JSON</button>
+    <button id=buttonClearData title="ctrl+l">Clear all</button>
+    <button id=buttonPermaLink title="ctrl+p">Copy perma link</button>
+    <select id=styleSelect>
+      <option value="standard">Select highlighter</option>
+      <option value="a11y-dark">a11y-dark</option>
+      <option value="a11y-light">a11y-light</option>
+      <option value="agate">agate</option>
+      <option value="androidstudio">androidstudio</option>
+      <option value="an-old-hope">an-old-hope</option>
+      <option value="arduino-light">arduino-light</option>
+      <option value="arta">arta</option>
+      <option value="ascetic">ascetic</option>
+      <option value="atelier-cave-dark">atelier-cave-dark</option>
+      <option value="atelier-cave-light">atelier-cave-light</option>
+      <option value="atelier-dune-dark">atelier-dune-dark</option>
+      <option value="atelier-dune-light">atelier-dune-light</option>
+      <option value="atelier-estuary-dark">atelier-estuary-dark</option>
+      <option value="atelier-estuary-light">atelier-estuary-light</option>
+      <option value="atelier-forest-dark">atelier-forest-dark</option>
+      <option value="atelier-forest-light">atelier-forest-light</option>
+      <option value="atelier-heath-dark">atelier-heath-dark</option>
+      <option value="atelier-heath-light">atelier-heath-light</option>
+      <option value="atelier-lakeside-dark">atelier-lakeside-dark</option>
+      <option value="atelier-lakeside-light">atelier-lakeside-light</option>
+      <option value="atelier-plateau-dark">atelier-plateau-dark</option>
+      <option value="atelier-plateau-light">atelier-plateau-light</option>
+      <option value="atelier-savanna-dark">atelier-savanna-dark</option>
+      <option value="atelier-savanna-light">atelier-savanna-light</option>
+      <option value="atelier-seaside-dark">atelier-seaside-dark</option>
+      <option value="atelier-seaside-light">atelier-seaside-light</option>
+      <option value="atelier-sulphurpool-dark">atelier-sulphurpool-dark</option>
+      <option value="atelier-sulphurpool-light">atelier-sulphurpool-light</option>
+      <option value="atom-one-dark">atom-one-dark</option>
+      <option value="atom-one-dark-reasonable">atom-one-dark-reasonable</option>
+      <option value="atom-one-light">atom-one-light</option>
+      <option value="brown-paper">brown-paper</option>
+      <option value="codepen-embed">codepen-embed</option>
+      <option value="color-brewer">color-brewer</option>
+      <option value="darcula">darcula</option>
+      <option value="dark">dark</option>
+      <option value="default">default</option>
+      <option value="docco">docco</option>
+      <option value="dracula">dracula</option>
+      <option value="far">far</option>
+      <option value="foundation">foundation</option>
+      <option value="github">github</option>
+      <option value="github-gist">github-gist</option>
+      <option value="gml">gml</option>
+      <option value="googlecode">googlecode</option>
+      <option value="gradient-dark">gradient-dark</option>
+      <option value="grayscale">grayscale</option>
+      <option value="gruvbox-dark">gruvbox-dark</option>
+      <option value="gruvbox-light">gruvbox-light</option>
+      <option value="hopscotch">hopscotch</option>
+      <option value="hybrid">hybrid</option>
+      <option value="idea">idea</option>
+      <option value="ir-black">ir-black</option>
+      <option value="isbl-editor-dark">isbl-editor-dark</option>
+      <option value="isbl-editor-light">isbl-editor-light</option>
+      <option value="kimbie.dark">kimbie.dark</option>
+      <option value="kimbie.light">kimbie.light</option>
+      <option value="lightfair">lightfair</option>
+      <option value="lioshi">lioshi</option>
+      <option value="magula">magula</option>
+      <option value="mono-blue">mono-blue</option>
+      <option value="monokai">monokai</option>
+      <option value="monokai-sublime">monokai-sublime</option>
+      <option value="night-owl">night-owl</option>
+      <option value="nnfx">nnfx</option>
+      <option value="nnfx-dark">nnfx-dark</option>
+      <option value="nord">nord</option>
+      <option value="obsidian">obsidian</option>
+      <option value="ocean">ocean</option>
+      <option value="paraiso-dark">paraiso-dark</option>
+      <option value="paraiso-light">paraiso-light</option>
+      <option value="pojoaque">pojoaque</option>
+      <option value="purebasic">purebasic</option>
+      <option value="qtcreator_dark">qtcreator_dark</option>
+      <option value="qtcreator_light">qtcreator_light</option>
+      <option value="railscasts">railscasts</option>
+      <option value="rainbow">rainbow</option>
+      <option value="routeros">routeros</option>
+      <option value="school-book">school-book</option>
+      <option value="shades-of-purple">shades-of-purple</option>
+      <option value="solarized-dark">solarized-dark</option>
+      <option value="solarized-light">solarized-light</option>
+      <option value="srcery">srcery</option>
+      <option value="sunburst">sunburst</option>
+      <option value="tomorrow">tomorrow</option>
+      <option value="tomorrow-night">tomorrow-night</option>
+      <option value="tomorrow-night-blue">tomorrow-night-blue</option>
+      <option value="tomorrow-night-bright">tomorrow-night-bright</option>
+      <option value="tomorrow-night-eighties">tomorrow-night-eighties</option>
+      <option value="vs">vs</option>
+      <option value="vs2015">vs2015</option>
+      <option value="xt256">xt256</option>
+      <option value="zenburn">zenburn</option>
+    </select>
+    <button id=buttonSizeReset title="ctrl+i">Reset Sizing</button>
+  </div>
+
+  <script src="lzutf8/lzutf8.min.js"></script>
+  <script>
+    //consider using https://codemirror.net/
+
+   let dontsave
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey) {
+        if(e.key == 's') {
+          e.preventDefault()
+          const active = document.activeElement
+          const offset = getCaretOffset(active)
+          format()
+          highlight()
+          setCaretOffset(active, offset)
+          save({type:'Manually',caller:'operator'})
+          dontsave = true
+        } else if (e.key == 'p') {
+          permaLink()
+          e.preventDefault()
+          dontsave = true
+        } else if (e.key == 'i') {
+          e.preventDefault()
+          sizeReset()
+        } else if (e.key == 'l') {
+          e.preventDefault()
+          clearData()
+        } else if (e.key == 'd') {
+          e.preventDefault()
+          downloadJson()
+        }
+      } else {
+				dontsave = false
+			}
+    })
+
+    w.addEventListener('keydown', (e) => {
+      if(e.key=='Tab'){
+        e.preventDefault()
+        // if (e.shiftKey) document.execCommand('delete')
+        // else document.execCommand('insertText', false, '  ')
+        if (e.shiftKey) document.execCommand("outdent", false, null)
+        else document.execCommand("indent", false, null)
+      }
+    })
+
+    w.addEventListener('keyup', (e) => {
+      jserror.classList.remove('active')
+      compile()
+      if (!dontsave) save({caller:'keyup event'})
+    })
+
+    w.addEventListener("paste", function(e) {
+      const text = (e.originalEvent || e).clipboardData.getData('text/plain')
+      // if (document.activeElement.id === 'h') document.execCommand("insertText", false, text)
+      // else document.execCommand("insertHTML", false, text)
+      document.execCommand("insertText", false, text)
+      e.preventDefault()
+    })
+
+    Storage.prototype.setObject = function(key, value) { this.setItem(key, LZUTF8.compress(JSON.stringify(value),{outputEncoding:'Base64'})) }
+    Storage.prototype.getObject = function(key) { let value = this.getItem(key); return value && JSON.parse(LZUTF8.decompress(value,{inputEncoding:'Base64'})) }
+
+    const defaults = {
+      h: '<h2>Welcome to Tomato Editor</h2>\n<img src="logo/tomato.svg"><br>\nCode is auto saved and survives page reloads<br>\nctrl+s formats and highlights<br>\nctrl+p copies a perma link<br>\nctrl+l clears all',
+      c: 'body { color:grey;font:1.5em Verdana;text-align:center }',
+      j: '',
+      size: {}
+    }
+
+    getCaretOffset = (el) => {
+      el.focus()
+      let _range = document.getSelection().getRangeAt(0)
+      let range = _range.cloneRange()
+      range.selectNodeContents(el)
+      range.setEnd(_range.endContainer, _range.endOffset)
+      return range.toString().length;
+    }
+
+    setCaretOffset = (el, pos) => {
+      el.focus()
+      for(let node of el.childNodes){
+        if(node.nodeType == 3){ // we have a text node
+          if(node.length >= pos){
+            // finally add our range
+            let range = document.createRange()
+            let sel = window.getSelection()
+            range.setStart(node,pos)
+            range.collapse(true)
+            sel.removeAllRanges()
+            sel.addRange(range)
+            return -1 // we are done
+          }else{
+            pos -= node.length
+          }
+        } else {
+          pos = setCaretOffset(node,pos)
+          if(pos == -1){
+            return -1 // no need to finish the for loop
+          }
+        }
+      }
+      return pos; // needed because of recursion stuff
+    }
+
+		clearData = () => {
+			document.querySelectorAll('pre code').forEach((code) => {
+				code.innerHTML = ''
+			})
+			compile()
+			save({caller:'clear data function'})
+		}
+
+    buttonClearData.addEventListener('click',clearData)
+
+
+    downloadJson = () => {
+      const d = new Date()
+      const date = d.toJSON().slice(0,10)
+      const time = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit', hour12: false}).replace(/:/g,'-')
+      const filename = `Tomato-${date}--${time}.json`
+      const element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(save({type:'download'})).replace(/\\n/g,'')))
+      element.setAttribute('download', filename);
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    }
+    buttonDownloadJson.addEventListener('click',downloadJson)
+
+		resetData = () => {
+			localStorage.tomato = null
+			restore()
+			save({caller:'reset data function'})
+			highlight()
+			compile()
+		}
+
+    let tomato
+    restore = () => {
+      try {
+        tomato = JSON.parse(LZUTF8.decompress(window.location.hash.split('#')[1],{inputEncoding:'Base64'}))
+				history.pushState('', document.title, window.location.pathname + window.location.search)
+      } catch(err) { tomato = localStorage.getObject('tomato') || defaults }
+      if (!(tomato.h.trim() || tomato.c.trim() || tomato.j.trim())) tomato = defaults
+      h.innerText = tomato.h
+      c.innerText = tomato.c
+      j.innerText = tomato.j
+      w.style.width = tomato.size.ww || ''
+      w.style.height = tomato.size.wh || ''
+      x.style.width = tomato.size.iw || ''
+      x.style.height = tomato.size.ih || ''
+    }
+
+    compile = () => iframe.srcdoc=`<!DOCTYPE html>
+    <html>
+      <head>
+        <style>${c.innerText}</style>
+      </head>
+      <body>
+        ${h.innerText}
+        <script>
+          window.addEventListener('error', (e)=> {
+            parent.postMessage(e.message,'*')
+          })
+        <\/script>
+        <script>${j.innerText}<\/script>
+      </body>
+    </html>`
+
+    const soflink = (evt) => { window.open('https://stackoverflow.com/search?q=[js]'+evt.currentTarget.e.data,'_blank') }
+    window.addEventListener('message', ((e)=>{
+      jserror.classList.add('active')
+      jserror.setAttribute("title", 'https://stackoverflow.com/search?q=[js]'+e.data)
+      jserror.setAttribute("data-error", e.data)
+      jserror.e = e
+      jserror.removeEventListener('click',soflink)
+      jserror.addEventListener('click',soflink)
+    }), false)
+
+    save = ({type='Auto',caller=''}) => {
+      if(!(w.hasAttribute('style') || x.hasAttribute('style')) || type==='download') size = {}
+      const tomato = { h: h.innerText, c: c.innerText, j: j.innerText, size: size }
+      if (type==='perm' || type==='download') return tomato
+      localStorage.setObject('tomato', tomato)
+      console.log(`${type} saved by ${caller}`)
+    }
+
+    permaLink = () => {
+      const hash = '#'+LZUTF8.compress(JSON.stringify(save({type:'perm'})),{outputEncoding:'Base64'})
+      // fetch('https://rel.ink/api/links/',{
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   referrerPolicy: 'no-referrer',
+      //   body: `{"url": "${window.location}${hash}"}`
+      // }).then(response =>
+      //   response.json().then(data => ({
+      //     data: data,
+      //     status: response.status
+      //   })
+      // ).then(res => {
+      //   let link
+      //   if(res.status === 201) link = `https://rel.ink/${res.data.hashid}`
+      //   else link = window.location+hash
+      //   navigator.clipboard.writeText(link).then(function() {
+      //     console.log('Copied perma-link to clipboard')
+      //     alert('Copied perma-link to clipboard')
+      //   }, function(err) {
+      //     console.error('Error copying perma-link to clipboard: ', err)
+      //   })
+      // }))
+      link = window.location+hash
+      navigator.clipboard.writeText(link)
+      console.log('Copied perma-link to clipboard')
+      alert('Copied perma-link to clipboard')
+    }
+
+    buttonPermaLink.addEventListener('click',permaLink)
+
+    let timeout
+    let size = {}
+    dimensions = () => {
+      size = {
+        ww: w.offsetWidth+'px',
+        wh: w.offsetHeight+'px',
+        iw: x.offsetWidth+'px',
+        ih: x.offsetHeight+'px'
+      }
+      info_iw.value = x.offsetWidth
+      info_ih.value = x.offsetHeight
+      if(timeout) clearTimeout(timeout)
+      timeout = setTimeout(() => save({caller:'ResizeObserver'}), 100)
+    }
+    new ResizeObserver(dimensions).observe(w)
+    new ResizeObserver(dimensions).observe(x)
+
+    sizeReset = () => {
+      w.removeAttribute('style')
+      x.removeAttribute('style')
+    }
+
+    buttonSizeReset.addEventListener('click',sizeReset)
+
+    info.addEventListener('click', (e) => {
+      if (x.hasAttribute('style') || w.hasAttribute('style')) {
+        sizeReset()
+      } else {
+        if(window.innerWidth>=575) w.style.cssText = 'width:calc(100% - 375px);height:100%'
+        else w.style.cssText = 'width:100%;height:100%'
+        x.style.cssText = 'width:375px;height:667px'
+      }
+    })
+
+    format = () => {
+      let options = {
+        'indent_inner_html': true,
+        'indent_size': 2,
+        'indent_char': ' ',
+        'wrap_line_length': 0,
+        'brace_style': 'collapse',
+        'preserve_newlines': false,
+        'max_preserve_newlines': 0,
+        'indent_handlebars': true,
+				'inline': [],
+        'extra_liners': [],
+        'end_with_newline': true,
+        'selector_separator': ' ',
+        'newline_between_rules': true,
+        'space_around_selector_separator': true,
+        'space_after_anon_function': false,
+        'space_before_conditional': false,
+        'unescape_strings': false
+      }
+      h.innerText = html_beautify(h.innerText, options)
+      c.innerText = css_beautify(c.innerText, options)
+      j.innerText = js_beautify(j.innerText, options)
+    }
+
+    highlight = () => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.configure({ useBR: true })
+        hljs.highlightBlock(block)
+      })
+    }
+
+		restore()
+    compile()
+
+    expander = (e,pre) => {
+      Array.from(pre.parentNode.children).filter(c=>c!=pre).forEach((s) => s.classList.add('collapsed'))
+      pre.classList.add('expanded')
+    }
+
+    collapser = (e,pre) => {
+      Array.from(pre.parentNode.children).forEach((s) => s.classList.remove('collapsed','expanded'))
+      e.preventDefault()
+    }
+
+		document.querySelectorAll('.expand').forEach((button) => {
+      button.addEventListener('click', (e) => {
+				let pre = e.currentTarget.parentNode
+        if (pre.classList.contains('expanded'))
+          collapser(e,pre)
+        else
+          expander(e,pre)
+      })
+		})
+
+  </script>
+
+<link id=lightstyle href="highlightjs/styles/atom-one-light.css" media="(prefers-color-scheme: light)" rel="stylesheet" />
+<link id=darkstyle href="highlightjs/styles/atom-one-dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" />
+<script src="highlightjs/highlight.pack.js"></script>
+<script>
+  hljs.configure({ useBR: true })
+  hljs.initHighlightingOnLoad()
+
+  const standardStyleSheetDark = stylesheet = 'highlightjs/styles/atom-one-dark.css'
+  const standardStyleSheetLight = stylesheet = 'highlightjs/styles/atom-one-light.css'
+
+  const darkmode = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  styleSelect.onchange = (e) => setStylesheet(`highlightjs/styles/${e.currentTarget.value}.css`)
+
+  const setStylesheet = (stylesheet) => {
+    if (darkmode()) {
+      if (stylesheet.includes('standard')) stylesheet = standardStyleSheetDark
+      darkstyle.href = stylesheet
+      localStorage.tomatoDarkStyle = stylesheet
+    } else {
+      if (stylesheet.includes('standard')) stylesheet = standardStyleSheetLight
+      lightstyle.href = stylesheet
+      localStorage.tomatoLightStyle = stylesheet
+    }
+  }
+
+  let styleOnLoad
+  if (darkmode()) styleOnLoad = localStorage.tomatoDarkStyle
+  else styleOnLoad = localStorage.tomatoLightStyle
+  if (styleOnLoad) setStylesheet(styleOnLoad)
+</script>
+<script src="rangy/rangy.js"></script>
+<script src="jsbeautify/beautify-html.js"></script>
+<script src="jsbeautify/beautify-css.js"></script>
+<script src="jsbeautify/beautify.js"></script>
+</body>
+</html>
